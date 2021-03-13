@@ -1,5 +1,8 @@
+import 'package:college_books/pages/home/book_list.dart';
 import 'package:college_books/pages/home/category_tab.dart';
 import 'package:college_books/pages/home/my_appbar.dart';
+import 'package:college_books/utils/hex_color.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
@@ -33,33 +36,43 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-      children: [
-        MediaQuery.removePadding(
-          removeTop: true,
-          context: context,
-          child: NotificationListener(
-            onNotification: (sn) {
-              if (sn is ScrollUpdateNotification && sn.depth == 0) {
-                _onScroll(sn.metrics.pixels);
-              }
-              return false;
-            },
-            child: ListView(
-              children: [
-                homeBanner(),
-                CategoryTab(),
-                Container(
-                  height: 800,
-                  child: Text('哈哈'),
-                )
-              ],
+      body: Stack(
+        children: [
+          MediaQuery.removePadding(
+            removeTop: true,
+            context: context,
+            child: NotificationListener(
+              onNotification: (sn) {
+                if (sn is ScrollUpdateNotification && sn.depth == 0) {
+                  _onScroll(sn.metrics.pixels);
+                }
+                return false;
+              },
+              child: Container(
+                decoration: BoxDecoration(color: HexColor('#f0f0f0')),
+                child: ListView(
+                  children: [
+                    homeBanner(),
+                    CategoryTab(),
+                    BookList(),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
+                        child: Text(
+                      '已经到底啦',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ))
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-        MyAppbar(appbarOpacity: _appbarOpacity),
-      ],
-    ));
+          MyAppbar(appbarOpacity: _appbarOpacity),
+        ],
+      ),
+    );
   }
 
   // 轮播图
