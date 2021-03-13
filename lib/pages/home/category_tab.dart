@@ -24,6 +24,12 @@ class _CategoryTab extends State<CategoryTab> {
   final _activeColor = Colors.blue; // 选中的tab字体颜色
   String currentSelectTab = '全部'; // 当前选中的tab
 
+  void clickTabItem(String text) {
+    setState(() {
+      currentSelectTab = text;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExpansionPanelList(
@@ -39,36 +45,12 @@ class _CategoryTab extends State<CategoryTab> {
             return scrollTab();
           },
           body: Container(
+            padding: EdgeInsets.fromLTRB(5, 0, 5, 20),
             child: Wrap(
               alignment: WrapAlignment.start,
               spacing: 10,
-              runSpacing: 5,
-              children: categorys.map((item) {
-                return Container(
-                  width: 110,
-                  padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: currentSelectTab == item ? _activeColor : _defaultColor,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
-                    color:
-                        currentSelectTab == item ? _activeColor : Colors.white,
-                  ),
-                  child: Text(
-                    item,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: currentSelectTab == item
-                            ? Colors.white
-                            : Colors.black),
-                  ),
-                );
-              }).toList(),
+              runSpacing: 8,
+              children: generateTabs('expand'),
             ),
           ),
         )
@@ -80,32 +62,69 @@ class _CategoryTab extends State<CategoryTab> {
     return Container(
       height: 50,
       child:
-          ListView(scrollDirection: Axis.horizontal, children: generateTabs()),
+          ListView(scrollDirection: Axis.horizontal, children: generateTabs('common')),
     );
   }
 
-  List<Widget> generateTabs() {
+  List<Widget> generateTabs(String type) {
     return categorys.map((item) {
-      return InkWell(
-        onTap: () {
-          setState(() {
-            currentSelectTab = item;
-          });
-        },
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-            child: Text(
-              item,
-              style: TextStyle(
-                color: item == currentSelectTab ? _activeColor : _defaultColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+      if (type == 'common') {
+        return tabItem(item);
+      } else if (type == 'expand'){
+        return expandTabItem(item);
+      } else {
+        throw "方法generateTabs 参数type错误, 请传入 'common' 或 'expand' ";
+      }
+    }).toList();
+  }
+
+  Widget tabItem(String text) {
+    return InkWell(
+      onTap: () {
+        clickTabItem(text);
+      },
+      child: Center(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+          child: Text(
+            text,
+            style: TextStyle(
+              color: text == currentSelectTab ? _activeColor : _defaultColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
-      );
-    }).toList();
+      )
+    );
+  }
+
+  Widget expandTabItem(String text) {
+    return InkWell(
+      onTap: () {
+        clickTabItem(text);
+      },
+      child: Container(
+        width: 110,
+        padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: currentSelectTab == text ? _activeColor : _defaultColor,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(5),
+          color: currentSelectTab == text ? _activeColor : Colors.white,
+        ),
+        child: Text(
+          text,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 14,
+              color: currentSelectTab == text ? Colors.white : Colors.black),
+        ),
+      ),
+    );
   }
 }
