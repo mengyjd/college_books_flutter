@@ -1,32 +1,36 @@
+import 'package:college_books/model/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class CategoryTab extends StatefulWidget {
+  List<CategoryModel> categories;
+
+  CategoryTab({Key key,List<CategoryModel> categories}): super(key: key){
+    this.categories = categories;
+  }
+
   @override
   _CategoryTab createState() => _CategoryTab();
 }
 
 class _CategoryTab extends State<CategoryTab> {
   // tabs数据
-  final List categorys = [
-    '全部',
-    '计算机科学与技术',
-    '旅游管理',
-    '酒店管理',
-    '国际经济与贸易',
-    '信息管理与信息系统',
-    '物流管理',
-    '人力资源管理',
-    '物流管理1'
-  ];
   bool _tabIsExpand = false; // tab面板是否展开
   final _defaultColor = Colors.grey; // 未选中的tab字体颜色
   final _activeColor = Colors.blue; // 选中的tab字体颜色
-  String currentSelectTab = '全部'; // 当前选中的tab
+  CategoryModel allTab = CategoryModel(id: "0", name: "全部"); // "全部"分类的tab
+  String currentSelectTab; // 当前选中的tab
 
-  void clickTabItem(String text) {
+  @override
+  void initState() {
+    super.initState();
+    widget.categories.insert(0, allTab);
+    currentSelectTab = allTab.id;
+  }
+
+  void clickTabItem(CategoryModel category) {
     setState(() {
-      currentSelectTab = text;
+      currentSelectTab = category.id;
     });
   }
 
@@ -67,29 +71,29 @@ class _CategoryTab extends State<CategoryTab> {
   }
 
   List<Widget> generateTabs(String type) {
-    return categorys.map((item) {
+    return widget.categories.map((category) {
       if (type == 'common') {
-        return tabItem(item);
+        return tabItem(category);
       } else if (type == 'expand'){
-        return expandTabItem(item);
+        return expandTabItem(category);
       } else {
         throw "方法generateTabs 参数type错误, 请传入 'common' 或 'expand' ";
       }
     }).toList();
   }
 
-  Widget tabItem(String text) {
+  Widget tabItem(CategoryModel category) {
     return InkWell(
       onTap: () {
-        clickTabItem(text);
+        clickTabItem(category);
       },
       child: Center(
         child: Padding(
           padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
           child: Text(
-            text,
+            category.name,
             style: TextStyle(
-              color: text == currentSelectTab ? _activeColor : _defaultColor,
+              color: category.id == currentSelectTab ? _activeColor : _defaultColor,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
@@ -99,30 +103,30 @@ class _CategoryTab extends State<CategoryTab> {
     );
   }
 
-  Widget expandTabItem(String text) {
+  Widget expandTabItem(CategoryModel category) {
     return InkWell(
       onTap: () {
-        clickTabItem(text);
+        clickTabItem(category);
       },
       child: Container(
         width: 110,
         padding: EdgeInsets.fromLTRB(12, 10, 12, 10),
         decoration: BoxDecoration(
           border: Border.all(
-            color: currentSelectTab == text ? _activeColor : _defaultColor,
+            color: currentSelectTab == category.id ? _activeColor : _defaultColor,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(5),
-          color: currentSelectTab == text ? _activeColor : Colors.white,
+          color: currentSelectTab == category.id ? _activeColor : Colors.white,
         ),
         child: Text(
-          text,
+          category.name,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
           textAlign: TextAlign.center,
           style: TextStyle(
               fontSize: 14,
-              color: currentSelectTab == text ? Colors.white : Colors.black),
+              color: currentSelectTab == category.id ? Colors.white : Colors.black),
         ),
       ),
     );

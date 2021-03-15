@@ -1,8 +1,16 @@
+import 'package:college_books/model/home_model.dart';
 import 'package:college_books/utils/hex_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class BookList extends StatefulWidget {
+  List<BookModel> bookList;
+
+  BookList({
+    Key key,
+    this.bookList,
+  }) : super(key: key);
+
   @override
   _BookList createState() => _BookList();
 }
@@ -19,15 +27,15 @@ class _BookList extends State<BookList> {
           alignment: WrapAlignment.start,
           spacing: 7,
           runSpacing: 7,
-          children: books.map((item) {
-            return bookCard();
+          children: widget.bookList.map((item) {
+            return bookCard(item);
           }).toList(),
         ),
       ),
     );
   }
 
-  Widget bookCard() {
+  Widget bookCard(BookModel book) {
     final double cardWidth = 160;
     return Container(
       width: cardWidth,
@@ -41,7 +49,7 @@ class _BookList extends State<BookList> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.network(
-            'https://www.hualigs.cn/image/604b78c9d35d2.jpg',
+            book.cover,
             width: cardWidth,
             height: 175,
             fit: BoxFit.cover,
@@ -49,7 +57,7 @@ class _BookList extends State<BookList> {
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 2),
             child: Text(
-              'Java高级',
+              book.name,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left,
@@ -61,7 +69,7 @@ class _BookList extends State<BookList> {
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 0, 8, 5),
             child: Text(
-              '￥135.99',
+              '￥${book.price}',
               textAlign: TextAlign.left,
               style: TextStyle(
                 fontSize: 16,
