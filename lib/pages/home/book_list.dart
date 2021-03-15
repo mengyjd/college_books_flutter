@@ -40,44 +40,45 @@ class _BookList extends State<BookList> {
     return Container(
       width: cardWidth,
       height: 250,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
+      child: PhysicalModel(
         color: Colors.white,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Image.network(
-            book.cover,
-            width: cardWidth,
-            height: 175,
-            fit: BoxFit.cover,
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 2),
-            child: Text(
-              book.name,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                fontSize: 15,
+        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Image.network(
+              book.cover,
+              width: cardWidth,
+              height: 175,
+              fit: BoxFit.cover,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 2),
+              child: Text(
+                book.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: 15,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 0, 8, 5),
-            child: Text(
-              '￥${book.price}',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                fontSize: 16,
-                color: HexColor('#d1470d'),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 5),
+              child: Text(
+                '￥${book.price}',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: HexColor('#d1470d'),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
