@@ -1,11 +1,11 @@
 import 'package:college_books/dao/home_dao.dart';
 import 'package:college_books/model/home_model.dart';
 import 'package:college_books/model/publish_goods_model.dart';
-import 'package:college_books/utils/empty_widget.dart';
+import 'package:college_books/pages/publish/image_picker.dart';
 import 'package:college_books/utils/hex_color.dart';
+import 'package:college_books/widget/my_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 
 class PublishPage extends StatefulWidget {
   @override
@@ -13,9 +13,7 @@ class PublishPage extends StatefulWidget {
 }
 
 class _PublishPage extends State<PublishPage> {
-  List<Asset> images = []; // 选择的图片列表
-  String _error;
-  final int totalSelectImg = 6; // 最多可选择的图片数量
+
   // 选择的分类
   CategoryModel selectedCategory = CategoryModel(id: '0', name: '必选, 请选择');
   List<CategoryModel> categories = []; // 分类列表
@@ -50,60 +48,10 @@ class _PublishPage extends State<PublishPage> {
     categories = await HomeDao.categories();
   }
 
-  // 点击列表图片
-  void onTapImg(Asset asset, int index) {
-    // TODO: 后续版本更新功能: 放大查看图片
-    print("onTapImg=$asset, $index");
-  }
-
-  // 点击删除列表中的删除按钮, 从列表中删除该图片
-  void onTapDelete(Asset asset, int index) {
-    setState(() {
-      images.removeAt(index);
-    });
-  }
-
   // 点击选择分类
   void onTapCategory() {
     showModalBottomSheet(
         context: context, builder: (context) => _buildBottomSheet(context));
-  }
-
-  // 选择图片
-  Future<void> loadAssets() async {
-    List<Asset> resultList;
-    String error;
-
-    try {
-      resultList = await MultiImagePicker.pickImages(
-        maxImages: totalSelectImg - images.length,
-        enableCamera: true,
-        materialOptions: MaterialOptions(
-          actionBarTitle: "选择图片",
-          allViewTitle: "请选择图片",
-          selectionLimitReachedText: "最多添加$totalSelectImg张图片哦",
-        ),
-      );
-    } on Exception catch (e) {
-      error = e.toString();
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      images = [...images, ...resultList];
-      if (error != null) {
-        ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar("图片选择器错误"));
-        print("multi_image_picker发生了错误: $_error");
-      }
-    });
-  }
-
-  updateLoadImg(Asset asset) {
-
   }
 
   // 修改商品数量, +1 或 -1
@@ -124,17 +72,20 @@ class _PublishPage extends State<PublishPage> {
       return;
     }
     print('publishGoods=${publishGoods.toJson()}');
+    submit();
+  }
 
-    ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar("通过"));
+  void submit() {
+    ScaffoldMessenger.of(context).showSnackBar(MyWidget.buildSnackBar('提交'));
   }
 
   bool _validateForm() {
     if (publishGoods.title == null || publishGoods.title.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar("请填写标题"));
+      ScaffoldMessenger.of(context).showSnackBar(MyWidget.buildSnackBar("请填写标题"));
       return false;
     }
     if (publishGoods.price == null || publishGoods.price == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar("请填写价格"));
+      ScaffoldMessenger.of(context).showSnackBar(MyWidget.buildSnackBar("请填写价格"));
       return false;
     }
     return true;
@@ -149,8 +100,8 @@ class _PublishPage extends State<PublishPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             ..._fromTextInput(),
-            // 图片上传list
-            _buildImgList(),
+            // 图片选择组件
+            ImagePicker(totalSelectImg: 6,),
             // 分割条
             Container(
               height: 15,
@@ -195,94 +146,6 @@ class _PublishPage extends State<PublishPage> {
         ),
       ),
     ];
-  }
-
-  // 图片列表
-  Widget _buildImgList() {
-    if (images != null) {
-      // 用户选择的图片列表
-      List<Widget> selectedImgList = List.generate(images.length, (index) {
-        Asset asset = images[index];
-        return _addedImgWidget(asset, index);
-      });
-      Widget tailWidget =
-          images.length >= totalSelectImg ? EmptyWidget() : _addImgWidget();
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
-        child: Wrap(
-          alignment: WrapAlignment.start,
-          spacing: 10,
-          runSpacing: 10,
-          children: [...selectedImgList, tailWidget],
-        ),
-      );
-    } else {
-      return _addImgWidget();
-    }
-  }
-
-  // 已添加到列表的图片组件
-  Widget _addedImgWidget(Asset asset, int index) {
-    return InkWell(
-      onTap: () {
-        onTapImg(asset, index);
-      },
-      child: Stack(
-        alignment: AlignmentDirectional.center,
-        clipBehavior: Clip.none,
-        children: [
-          AssetThumb(
-            asset: asset,
-            width: 100,
-            height: 100,
-          ),
-          // 从列表删除图片Icon
-          Positioned(
-            top: 0,
-            right: 0,
-            child: InkWell(
-              onTap: () {
-                onTapDelete(asset, index);
-              },
-              child: CircleAvatar(
-                radius: 13,
-                backgroundColor: Color.fromRGBO(0, 0, 0, 0.4),
-                child: Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ),
-            ),
-          ),
-          // 图片上传进度条
-          Container(
-            width: 80,
-            child: LinearProgressIndicator(
-              value: .5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 添加图片按钮
-  Widget _addImgWidget() {
-    return InkWell(
-      onTap: loadAssets,
-      child: Container(
-        alignment: Alignment.center,
-        width: 100,
-        height: 100,
-        color: HexColor('#f1f1f1'),
-        child: Icon(
-          Icons.add,
-          color: HexColor('#d6d6d6'),
-          size: 30,
-        ),
-      ),
-    );
   }
 
   // 售卖信息
@@ -466,22 +329,6 @@ class _PublishPage extends State<PublishPage> {
           padding: EdgeInsets.all(12),
           child: Text("发布", style: TextStyle(fontSize: 16)),
           onPressed: () => clickPublishBtn()),
-    );
-  }
-
-  Widget _buildSnackBar(String text) {
-    return SnackBar(
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-      content: Text(text),
-      duration: Duration(seconds: 3),
-      //持续时间
-      backgroundColor: Colors.red,
-      onVisible: () => print('onVisible'),
-      action: SnackBarAction(
-          textColor: Colors.white, label: '确定', onPressed: () {}),
     );
   }
 }
