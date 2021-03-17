@@ -20,6 +20,7 @@ class HttpUtils {
 
     try {
       Response response = await dio.request(url, data: data, options: Options(method: method));
+      // print('response=$response');
       if(response.statusCode == 200) {
         result = response.data;
       } else {
@@ -29,6 +30,7 @@ class HttpUtils {
       /// 打印请求失败相关信息
       print('请求出错：' + e.toString());
     }
+    print('result[data]=${result['data']}');
     return result['data'];
   }
 
