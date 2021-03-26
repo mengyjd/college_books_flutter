@@ -1,7 +1,7 @@
 import 'package:college_books/model/home_model.dart';
+import 'package:college_books/pages/book_detail/book_detail.dart';
 import 'package:college_books/utils/hex_color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class BookList extends StatefulWidget {
   List<BookModel> bookList;
@@ -16,7 +16,7 @@ class BookList extends StatefulWidget {
 }
 
 class _BookList extends State<BookList> {
-  final List books = [1, 2, 3, 4, 5, 6, 7];
+  void skipDetailPage() {}
 
   @override
   Widget build(BuildContext context) {
@@ -37,47 +37,53 @@ class _BookList extends State<BookList> {
 
   Widget bookCard(BookModel book) {
     final double cardWidth = 160;
-    return Container(
-      width: cardWidth,
-      height: 250,
-      child: PhysicalModel(
-        color: Colors.white,
-        clipBehavior: Clip.antiAlias,
-        borderRadius: BorderRadius.circular(5),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Image.network(
-              book.cover,
-              width: cardWidth,
-              height: 175,
-              fit: BoxFit.cover,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 8, 2),
-              child: Text(
-                book.name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontSize: 15,
+    return InkWell(
+      onTap: () => {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => BookDetail()))
+      },
+      child: Container(
+        width: cardWidth,
+        height: 250,
+        child: PhysicalModel(
+          color: Colors.white,
+          clipBehavior: Clip.antiAlias,
+          borderRadius: BorderRadius.circular(5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Image.network(
+                book.cover,
+                width: cardWidth,
+                height: 175,
+                fit: BoxFit.cover,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 2),
+                child: Text(
+                  book.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 15,
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 8, 5),
-              child: Text(
-                '￥${book.price}',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: HexColor('#d1470d'),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 5),
+                child: Text(
+                  '￥${book.price}',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: HexColor('#d1470d'),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

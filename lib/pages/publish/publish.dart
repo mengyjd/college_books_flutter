@@ -44,6 +44,7 @@ class _PublishPage extends State<PublishPage> {
     );
   }
 
+  // 获取发布图书的分类
   void getCategories() async {
     categories = await HomeDao.categories();
   }

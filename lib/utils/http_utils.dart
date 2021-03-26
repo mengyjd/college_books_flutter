@@ -6,7 +6,7 @@ class HttpUtils {
   static Dio dio;
 
   // 默认配置
-  static const String API_PREFIX = 'http://guiyi.xyz:7300/mock/604cd2faba85b50020b05466/cb'; // url前缀
+  static const String API_PREFIX = 'http://guiyi.xyz:7300/mock/605b0314753c0000213750ad/cb'; // url前缀
   static const int CONNECT_TIMEOUT = 10000; // 连接超时 ms
   static const int RECEIVE_TIMEOUT = 10000; // 响应超时 ms
 
