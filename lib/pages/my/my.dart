@@ -1,3 +1,4 @@
+import 'package:college_books/pages/login.dart';
 import 'package:flutter/material.dart';
 
 class MyPage extends StatefulWidget {
@@ -27,12 +28,18 @@ class _MyPage extends State<MyPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: Color.fromRGBO(255, 255, 255, 0.4),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => LoginPage()));
+            },
             child: CircleAvatar(
-              radius: 45,
-              backgroundImage: AssetImage('assets/images/txz.jpg'),
+              radius: 50,
+              backgroundColor: Color.fromRGBO(255, 255, 255, 0.4),
+              child: CircleAvatar(
+                radius: 45,
+                backgroundImage: AssetImage('assets/images/txz.jpg'),
+              ),
             ),
           ),
           Padding(

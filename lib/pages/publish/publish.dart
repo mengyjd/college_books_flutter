@@ -3,7 +3,7 @@ import 'package:college_books/model/home_model.dart';
 import 'package:college_books/model/publish_goods_model.dart';
 import 'package:college_books/pages/publish/image_picker.dart';
 import 'package:college_books/utils/hex_color.dart';
-import 'package:college_books/widget/my_widget.dart';
+import 'package:college_books/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -77,16 +77,16 @@ class _PublishPage extends State<PublishPage> {
   }
 
   void submit() {
-    ScaffoldMessenger.of(context).showSnackBar(MyWidget.buildSnackBar('提交'));
+    Utils.showSnackBar(context, '提交');
   }
 
   bool _validateForm() {
     if (publishGoods.title == null || publishGoods.title.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(MyWidget.buildSnackBar("请填写标题"));
+      Utils.showSnackBar(context, '请填写标题');
       return false;
     }
     if (publishGoods.price == null || publishGoods.price == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(MyWidget.buildSnackBar("请填写价格"));
+      Utils.showSnackBar(context, '请填写价格');
       return false;
     }
     return true;
